@@ -1,0 +1,17 @@
+.container {
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid black;
+}
+
+.title {
+  text-align: center;
+}
+
+.danger {
+  color: red
+}
+
+.active {
+  text-decoration: underline;
+}

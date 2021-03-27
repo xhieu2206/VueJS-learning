@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <title>Form Input Bindings</title>
+</head>
+<body>
+  <div id="app" class="container">
+    <h2 class="title">{{ title }}</h2>
+    <input v-model="message" placeholder="edit me">
+    <p>Message is: "{{ message }}"</p>
+
+    <hr />
+
+    <textarea v-model="multiLineMessage"></textarea>
+    <p style="white-space: pre-line;">{{ multiLineMessage }}</p>
+
+    <hr />
+
+    <input type="checkbox" id="checkbox" v-model="checked">
+    <label for="checkbox">{{ checked }}</label>
+
+    <hr />
+
+    <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+    <label for="jack">Jack</label>
+    <input type="checkbox" id="john" value="John" v-model="checkedNames">
+    <label for="john">John</label>
+    <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+    <label for="mike">Mike</label>
+    <br>
+    <span>Checked names: {{ checkedNames }}</span>
+
+    <hr />
+
+    <input type="radio" id="one" value="One" v-model="picked">
+    <label for="one">One</label>
+    <br>
+    <input type="radio" id="two" value="Two" v-model="picked">
+    <label for="two">Two</label>
+    <br>
+    <span>Picked: {{ picked }}</span>
+
+    <hr />
+
+    <select v-model="selected">
+      <option disabled>Please select one</option>
+      <option value="A">A option</option>
+      <option value="B">B option</option>
+      <option value="C">C option</option>
+    </select>
+    <span>Selected: {{ selected }}</span>
+
+    <hr />
+
+    
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

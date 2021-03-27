@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <title>The Vue Instance</title>
+</head>
+<body>
+  <div id="app" class="container">
+    <input v-model="message" />
+    <hr />
+    <p>This is re-active: {{ message }}</p>
+    <p v-once>This will never change: {{ message }}</p>
+    <hr />
+    <p>Using mustaches: {{ message }}</p>
+    <p>Using v-html directive: <span v-html="rawHtml"></span></p>
+    <hr />
+    <p>Mustaches cannot be used inside HTML attributes. Instead, use a v-bind directive</p>
+    <p v-bind:class="colorStyle.red">Text color should be red because we are using v-bind:class="colorStyle.red"</p>
+    <hr />
+    <ul v-if="seen">
+      <li-item
+        v-for="text in textArr"
+        :text="text"
+        v-bind:key="text"
+      ></li-item>
+    </ul>
+    <button @click="toggleSeenHandler">Toggle Seen</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

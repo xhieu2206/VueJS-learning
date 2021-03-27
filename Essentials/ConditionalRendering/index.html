@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <title>Conditional Rendering</title>
+</head>
+<body>
+  <div id="app" class="container">
+    <h2 class="title">{{ title }}</h2>
+    <p v-if="isAwesome">VueJS is awesome</p>
+    <template v-else>
+      <p>Please tell me</p>
+      <p>why do you think</p>
+      <p>VueJS is not awesome</p>
+    </template>
+    <button @click="toggleIsAwesomeHandler">Toggle isAwesome</button>
+  </div>
+
+  <div id="app2" class="container">
+    <p v-if="number === 1">This is number 1</p>
+    <p v-else-if="number === 2">This is number 2</p>
+    <p v-else="number === 3">This is number 3</p>
+    <button @click="randomButtonClickHandler">Button</button>
+  </div>
+
+  <div id="app3" class="container">
+    <template v-if="loginType == true">
+      <label>Username</label>
+      <input placeholder="Enter your username" key="username-input" />
+    </template>
+    <template v-else>
+      <label>Email</label>
+      <input placeholder="Enter your email address" key="email-input" />
+    </template>
+    <button @click="toggleLoginTypeHandler">Toggle Login type</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
