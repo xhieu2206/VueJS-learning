@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+  <title>Slots</title>
+</head>
+<body>
+  <div id="app" class="container">
+    <blog-post v-bind:post-title="title"></blog-post>
+
+    <hr />
+    <layout-component>
+      <p style="color: red">this thing will gonna be displayed by using <b>slot</b></p>
+      <P>You can access the title here: "{{ title }}"</P>
+    </layout-component>
+
+    <button-custom>
+      This text should be displayed for replacing the fallback
+    </button-custom>
+
+    <button-custom></button-custom>
+    <hr />
+
+    <base-layout>
+      <template v-slot:header>
+        <h3>Đây là title của page được hiển thị bên trong slot của header</h3>
+      </template>
+
+      <p>Đây là main content</p>
+      <p>And another one</p>
+
+      <template v-slot:footer>
+        <p>Here is the contact info displayed in the footer</p>
+      </template>
+    </base-layout>
+
+    <current-user>
+      <template v-slot:default="slotProps">
+        <b>{{ slotProps.user.firstName + ' ' + slotProps.user.lastName }}</b>
+      </template>
+    </current-user>
+
+    <default-slot-curent-user v-slot="{ user: person }">
+      <b>{{ person.firstName + ' ' + person.lastName }}</b>
+    </default-slot-curent-user>
+
+    <post-item
+      v-for="post in posts"
+      v-bind:post="post"
+      v-bind:key="post.id"
+      v-on:select-post="selectId"
+      v-bind:init-clicked-counter="initialClickedValue"
+    ></post-item>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
