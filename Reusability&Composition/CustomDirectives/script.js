@@ -1,4 +1,4 @@
-// https://vuejs.org/v2/guide/components-edge-cases.html
+// https://vuejs.org/v2/guide/custom-directive.html
 
 // https://jsonplaceholder.typicode.com/posts
 
@@ -647,38 +647,45 @@ Vue.component('blog-post', {
   template: `<h3 class="title">{{ postTitle }}</h3>`
 });
 
-Vue.component('current-user', {
-  data: function() {
-    return {
-      user: {
-        firstName: 'Nguyễn',
-        lastName: 'Hiếu'
-      }
-    }
-  },
-  template: `
-    <div class="container">
-      <span>Full Name lấy từ parent component: </span>
-      <slot v-bind:user="user"></slot>
-    </div>
-  `
-});
+/*
+Custom directive:
+- Ngoài những directive mà Vue đã cung cấp cho chúng ta, Vue cũng cho phép dev có thể register các directives của riêng mình, như trong các trường hợp muốn access các low-lovel DOM, như ví dụ dưới đây.
+*/
 
-Vue.component('default-slot-curent-user', {
-  data: function() {
-    return {
-      user: {
-        firstName: 'Nguyễn',
-        lastName: 'Hiếu'
-      }
-    }
-  },
-  template: `
-    <div class="container">
-      <span>Đây là <b>default-slot-curent-user</b>, Full Name lấy từ parent component: </span>
-      <slot v-bind:user="user"></slot>
-    </div>
-  `
+/*
+Hook Functions:
+- Một directive definition object có thể provide several hook functions (optional)
+  + bind: được gọi duy nhất 1 lần, khi mà directive được bound vào element lần đầu tiên, đây là nơi mà chúng ta có thể thực hiện one-time setup work
+  + inserted: được gọi khi mà bound element được inserted vào parent node (đảm bảo rằng parent đã hiện diện, không nhất thiết phải in-document)
+  + update: được called ngay sau khi containing component;s VNode được updated, nhưng before its children have updated.
+  + componentUpdated: called sau khi containing component's VNode và its children được updated
+  + unbind: được gọi đúng 1 lần, khi mà directive được unbound khỏi element.
+*/
+
+/*
+Directive Hook Arguments: https://vuejs.org/v2/guide/custom-directive.html#Directive-Hook-Arguments
+*/
+
+Vue.directive('demo', {
+  bind: function (el, binding, vnode) {
+    var s = JSON.stringify
+    el.innerHTML =
+      'name: '       + s(binding.name) + '<br>' +
+      'value: '      + s(binding.value) + '<br>' +
+      'expression: ' + s(binding.expression) + '<br>' +
+      'argument: '   + s(binding.arg) + '<br>' +
+      'modifiers: '  + s(binding.modifiers) + '<br>' +
+      'vnode keys: ' + Object.keys(vnode).join(', ')
+  }
+})
+
+// Register a global custom directive called `v-focus`
+Vue.directive('focus', {
+  // Khi element được bounded vào DOM ...
+  inserted: function(el) {
+    // focus vào element
+    el.focus();
+  }
 });
 
 Vue.mixin({
@@ -693,12 +700,23 @@ Vue.mixin({
 var vm = new Vue({
   el: '#app',
   data: {
-    title: 'Handling Edge Cases',
+    title: 'Custom Directive',
     name: 'Root component',
     postFontSize: 1,
     posts: [],
     selectedPostId: 0,
     initialClickedValue: 0
+  },
+  // Nếu muốn register một directive locally, component cũng accept `directives` option
+  directives: {
+    /*
+    focus: {
+      // directive definition
+      inserted: function(el) {
+        el.focus();
+      }
+    }
+    */
   },
   methods: {
     selectId: function(postId) {

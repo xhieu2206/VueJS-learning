@@ -743,7 +743,7 @@ var vm = new Vue({
   el: '#app',
   mixins: [myMixin], // `Hello from mixin!` sẽ được gọi ra ở hook created
   data: {
-    title: 'Handling Edge Cases',
+    title: 'Mixins',
     name: 'Root component',
     postFontSize: 1,
     posts: [],
