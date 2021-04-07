@@ -15,7 +15,6 @@
     <hr />
     <TodoListItems
       v-bind:items="doneItems"
-      @click-item="clicked"
       v-bind:isDoneItems="true"
     />
   </div>
@@ -54,6 +53,13 @@ export default {
         this.items = this.items.filter(item => item.id !== id);
         this.doneItems.push(doneTtem);
       }
+    }
+  },
+  provide: function() {
+    return {
+      items: ['items'],
+      isDoneItems: ['isDoneItems'],
+      clicked: ['clicked']
     }
   }
 }

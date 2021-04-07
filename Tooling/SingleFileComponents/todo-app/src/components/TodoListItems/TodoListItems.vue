@@ -4,7 +4,6 @@
       v-for="item in items"
       v-bind:item="item"
       v-bind:key="item.id"
-      @click-item="clicked"
       v-bind:isDoneItem="isDoneItems"
     />
   </ul>
@@ -23,11 +22,6 @@ export default {
     },
     isDoneItems: {
       type: Boolean
-    }
-  },
-  methods: {
-    clicked: function(id, type) {
-      this.$emit('click-item', id, type);
     }
   }
 }

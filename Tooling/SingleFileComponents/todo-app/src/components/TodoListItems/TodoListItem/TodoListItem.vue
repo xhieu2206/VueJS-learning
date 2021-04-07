@@ -6,7 +6,6 @@
       v-bind:id="item.id"
       v-bind:class="'button-inline'"
       v-if="!isDoneItem"
-      v-on:clicked-item="clicked"
     >
       Done
     </Button>
@@ -15,7 +14,6 @@
       v-bind:id="item.id"
       v-bind:class="'button-inline'"
       v-if="!isDoneItem"
-      v-on:clicked-item="clicked"
     >
       Delete
     </Button>
@@ -48,7 +46,7 @@ export default {
 
 <style>
 li {
-  width: 20%;
+  width: 30%;
   text-align: left;
   margin: 2px auto 2px auto;
   padding: 5px;

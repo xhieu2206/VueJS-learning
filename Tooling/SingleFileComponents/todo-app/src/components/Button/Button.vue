@@ -1,7 +1,7 @@
 <template>
   <button
     v-bind:class="{ 'Danger': btnType === 'Danger', 'Success': btnType === 'Success' }"
-    @click="clicked"
+    @click="onClicked"
   >
     <slot></slot>
   </button>
@@ -19,13 +19,11 @@ export default {
       type: Number
     }
   },
+  inject: ['clicked', 'isDoneItems', 'items'],
   methods: {
-    clicked() {
-      if (this.btnType === 'Danger') {
-        this.$emit('clicked-item', this.id, 'delete');
-      } else {
-        this.$emit('clicked-item', this.id, 'done');
-      }
+    onClicked() {
+      const type = this.btnType === 'Danger' ? 'delete' : 'done';
+      this.clicked(this.id, type);
     }
   }
 }
