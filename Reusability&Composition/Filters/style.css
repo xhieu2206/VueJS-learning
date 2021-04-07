@@ -1,0 +1,27 @@
+.container {
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid black;
+}
+
+.title {
+  text-align: center;
+}
+
+.danger {
+  color: red
+}
+
+.active {
+  text-decoration: underline;
+}
+
+.post-item {
+  border: 1px solid black;
+  padding: 5px;
+  margin-bottom: 2px;
+}
+
+.input-focus {
+  border: 1px solid red;
+}
