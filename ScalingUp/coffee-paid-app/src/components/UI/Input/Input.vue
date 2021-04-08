@@ -4,6 +4,7 @@
     :placeholder="placeholder"
     :type="type"
     @change="onChanged"
+    :name="placeholder"
   />
 </template>
 
