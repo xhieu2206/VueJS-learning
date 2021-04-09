@@ -39,7 +39,6 @@ export default {
       }).then(res => {
         if (res.data.users.length > 0) {
           this.setCredential(token, res.data.users[0].email);
-          this.$router.replace('/items');
         }
       })
     }

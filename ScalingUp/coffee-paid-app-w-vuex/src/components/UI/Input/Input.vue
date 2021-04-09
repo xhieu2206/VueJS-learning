@@ -26,15 +26,8 @@ export default {
   },
   methods: {
     onChanged() {
-      console.log(this.value);
       this.$emit('on-change', this.value);
     }
   }
 }
 </script>
-
-<style scoped>
-input {
-  width: 100%;
-}
-</style>

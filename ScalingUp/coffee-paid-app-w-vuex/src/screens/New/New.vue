@@ -14,7 +14,6 @@
           :placeholder="'Amount'"
           :type="'number'"
           @on-change="moneyChangedHandler"
-          :value="amount"
         ></Input>
       </div>
       <div class="form-control">
@@ -57,7 +56,7 @@ export default {
   data() {
     return {
       selectedUserId: '',
-      amount: 1000000,
+      amount: 0,
       date: '',
       users: []
     }
@@ -92,7 +91,6 @@ export default {
   },
   methods: {
     changeNameHandler(value) {
-      console.log(value);
       this.selectedUserId = value;
     },
     moneyChangedHandler(value) {
