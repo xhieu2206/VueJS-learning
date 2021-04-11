@@ -603,6 +603,154 @@ const data = [
   }
 ]
 
+/*
+Vuex
+- `store` đơn giản là một container lưu trữ application state, có 2 điểm khiến Vuex store khác biệt với plain global object
+  + Vuex store là reactive, khi Vue components rtrieve state từ store, nó sẽ được update tương ứng với sự thay đổi của store
+  + Chúng ta không được phép mutate store's state, cách duy nhất để thay đổi store's state là commiting mutations.
+*/
+
+/*
+Getters
+- Getters có thể coi như là computed properties của stores.
+- Chúng ta có thể access getters bằng `store.getters` object hoặc sử dụng mapGetters
+*/
+
+/*
+Mutations
+- Cách duy nhất để thực sự change state trong Vuex store là commiting một mutation. Vuex mutations gần tương tự với events: mỗi mutations có string type và một handler, handler function là nơi mà chúng ta sẽ thực hiện state modifications, và nó nhận vào state là first arg
+- Chúng ta không thể nào call mutation handler một cách trực tiếp, hãy nghĩ như là event registration, khi mutation với type là `increment` được triggerd, call đến handler tương ứng, như ở đây là `store.commit('increment')`
+- Có thể commit với Payload (tham số)
+- Trong phần lớn các cases, payload nên là object
+*/
+
+/*
+Mutations Follow Vue's Reactivity Rules
+- Khởi tạo trước state's state với tất cả các field mà chúng ta sẽ cần.
+- Khi thêm mới một property vào state object, chúng ta nên sử dụng:
+  + Spread operator (tương tự với Redux): state.obj = { ...state.obj, newProp: 123 }
+  + Sử dụng Vue.set(obj, 'newProp', 123)
+*/
+
+/*
+Using Constants for Mutation Types:
+// mutation-types.js
+export const SOME_MUTATION = 'SOME_MUTATION'
+
+// store.js
+import Vuex from 'vuex'
+import { SOME_MUTATION } from './mutation-types'
+
+const store = new Vuex.Store({
+  state: { ... },
+  mutations: {
+    // we can use the ES2015 computed property name feature
+    // to use a constant as the function name
+    [SOME_MUTATION] (state) {
+      // mutate state
+    }
+  }
+})
+*/
+
+/*
+Mutations Must Be Synchronous
+- Important rule: mutation handler function bắt buộc phải là synchronous
+*/
+
+/*
+Committing Mutations in Components
+- Ngoài việc dùng `this.$store.commit`, chúng ta có thể dùng `mapMutations` helper để maps component methods với store.commit calls.
+
+import { mapMutations } from 'vuex'
+
+export default {
+  // ...
+  methods: {
+    ...mapMutations([
+      'increment', // map `this.increment()` to `this.$store.commit('increment')`
+
+      // `mapMutations` also supports payloads:
+      'incrementBy' // map `this.incrementBy(amount)` to `this.$store.commit('incrementBy', amount)`
+    ]),
+    ...mapMutations({
+      add: 'increment' // map `this.add()` to `this.$store.commit('increment')`
+    })
+  }
+}
+*/
+
+/*
+Actions:
+- Actions cũng gần tương tự với mutations, khác biệt là
+  + thay vì mutating state, actions commit mutations
+  + actions có thể chứa các async code
+- actions handler sẽ nhận vào một context object sẽ contain các method / props của store instance, do đó chúng ta có thể `context.commit` để commit a mutation, hoặc access state bằng `context.state` hoặc `context.getter`.
+- Chúng ta còn có thể call để các tions khác với `context.dispatch`.
+
+// Ví dụ
+actions: {
+  increment (context) {
+    context.commit('increment');
+  }
+}
+
+Sử dụng ES6 syntax
+actions: {
+  increment ({ commit }) {
+    commit('increment');
+  }
+}
+///////////////////////////////////
+*/
+
+/*
+Dispatching Actions
+- actions được trigger với store.dispatch method.
+- Do mutations phải là synchronous code, còn actions thì không, do đó chúng ta có thể thực hiện async operations code bên trong action, giá sử sau 1s chúng ta mới muốn thực hiện mutation
+*/
+
+/*
+Dispatching Actions in Components
+- Chúng ta có thể dispatch actions trong component với `this.$store.dispatch('xxx')` hoặc sử dụng `mapActions` helper
+*/
+
+Vue.use(Vuex);
+
+const store = new Vuex.Store({
+  state: {
+    count: 0,
+    message: 'Hello Vuex',
+    todos: [
+      { id: 1, text: 'Learning Vuejs base concept', done: true },
+      { id: 2, text: 'Learning Vuejs Router', done: true },
+      { id: 3, text: 'Learning Vuex', done: false }
+    ]
+  },
+  mutations: {
+    increment(state, payload) {
+      state.count += payload.count;
+    }
+  },
+  actions: {
+    incrementAsync ({ commit }, { count }) {
+      setTimeout(() => {
+        commit({
+          type: 'increment',
+          count
+        });
+      }, 1000);
+    }
+  },
+  getters: {
+    doneTodos: state => {
+      return state.todos.filter(todo => todo.done);
+    },
+    doneTodosLength: state => state.todos.filter(todo => todo.done).length,
+    getTodoById: state => id => state.todos.find(todo => todo.id === id)
+  }
+})
+
 const getPosts = () => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -623,6 +771,9 @@ Vue.component('post-item', {
     timeDisplay: function() {
       const timeText = this.counter > 1 ? 'times' : 'time';
       return timeText;
+    },
+    count() {
+      return this.$store.state.count;
     }
   },
   template: `
@@ -636,6 +787,7 @@ Vue.component('post-item', {
       <button v-on:click="injectFunction">Click to call the inject function</button>
       <div v-html="post.body"></div>
       <p>You have clicked this post {{ counter }} {{ timeDisplay }}</p>
+      <p>store.state.count inside "post-item" component: {{ count }}</p>
     </div>
   `,
 });
@@ -654,17 +806,44 @@ Vue.mixin({
   }
 });
 
+/*
+Single State Tree
+- Để display state trong store, chúng ta có thể sử dụng computed property
+- Pattern trên làm cho component bị phụ thuộc vào global store singleton, khi sử dụng module system, chúng ta phải importing store ở mọi component sử dụng store state, do đó Vuex cung cấp một cơ chế để inject store vào tất cả child component bằng cách enabled `Vue.use(Vuex)`
+*/
+
+/*
+The `mapState` helper
+- Khi một component cần sử dụng multiple store state props hoặc getters, việc dùng computed properties có thể gây ra tình trạng lặp code và dài dòng, do đó chúng ta có thể sử dụng `mapState` để generate computed getter functions thay cho chúng ta.
+*/
+
+/*
+Object Spread Operator:
+- Noted that `mapState` trả về một object, do đó chúng ta có thể dùng object spread operator để combine với các local computed khác.
+*/
+
+/*
+Object-Style Commit
+- Một cách khác là để commit một mutation là using một object có attribute là `type` tương ứng với tên của handler được trigger.
+- Khi sử dụng object-style commit, toàn bộ object sẽ được passed như là payload đến mutation handler, do đó handler sẽ không cần phải thay đổi gì hết
+*/
+
 var vm = new Vue({
   el: '#app',
-  data: {
-    title: 'Mixins',
-    name: 'Root component',
-    postFontSize: 1,
-    posts: [],
-    selectedPostId: 0,
-    initialClickedValue: 0
+  store,
+  data() {
+    return {
+      title: 'Vuex',
+      name: 'Root component',
+      postFontSize: 1,
+      posts: [],
+      selectedPostId: 0,
+      initialClickedValue: 0
+    }
   },
   methods: {
+    ...Vuex.mapMutations(['increment']),
+    ...Vuex.mapActions(['incrementAsync']),
     selectId: function(postId) {
       this.selectedPostId = postId;
       alert('You have selected the post have has ID: ' + this.selectedPostId);
@@ -678,6 +857,40 @@ var vm = new Vue({
     conflicting: function() {
       console.log('conflicting from Vue component instance');
     },
+    incrementHandler: function() {
+      /* cách cũ */
+      // this.$store.commit('increment', { count: 2 });
+
+      /* Object-Style Commit */
+      /*
+      this.$store.commit({
+        type: 'increment',
+        count: 2
+      });
+      */
+
+      /* Sử dụng mapMutations để call */
+      /*
+      this.increment({
+        type: 'increment',
+        count: 2
+      });
+      */
+
+      /* giả sử việc update count bây giờ là một async operation */
+      /*
+      store.dispatch({
+        type: 'incrementAsync',
+        count: 10
+      });
+      */
+
+      /* Sử dụng mapActions */
+      this.incrementAsync({
+        type: 'incrementAsync',
+        count: 10
+      })
+    }
   },
   provide : function() {
     return {
@@ -693,5 +906,76 @@ var vm = new Vue({
     } catch(err) {
       console.log('Could not react API');
     }
+  },
+  /*
+  /* Sử dụng cách truyền thống */
+  /*
+  computed: {
+    count () {
+      return store.state.count;
+    }
   }
+  */
+
+  /* Sử dụng mapState */
+  /*
+  computed: Vuex.mapState({
+    count: state => state.count,
+    message: state => state.message,
+
+    // passing the string value 'count' là tương tự với `state => state.count`
+    countAlias: 'count',
+
+    // để access được local state với `this`, phải dùng normal function
+    countAndTitle (state) {
+      return this.title + ' ' + state.count;
+    }
+  })
+  */
+
+  /* Combination với local computed */
+  computed: {
+    displayComponentName() {
+      return `Component Name: ${this.name}`
+    },
+
+    /* Property-Style Access */
+    /*
+    doneTodosCount() {
+      return this.$store.getters.doneTodos.length;
+    },
+    */
+
+    /* mix the getters into computed with object spread operator */
+    /*
+    ...Vuex.mapGetters([
+      'doneTodosLength'
+    ]),
+    */
+
+    /* nếu như chúng ta muốn map a getter với 1 tên khác, sử dụng object */
+    ...Vuex.mapGetters({
+      doneTodosCount: 'doneTodosLength'
+    }),
+
+    ...Vuex.mapState({
+      count: state => state.count,
+      message: state => state.message,
+
+      // passing the string value 'count' là tương tự với `state => state.count`
+      countAlias: 'count',
+
+      // để access được local state với `this`, phải dùng normal function
+      countAndTitle (state) {
+        return this.title + ' ' + state.count;
+      }
+    })
+  }
+
+  /*
+  - Chúng ta cũng có thể pass string array vào `mapState` nếu như name của mapped computed property trùng với state sub tree name
+  computed: Vuex.mapState([
+    'count', 'message'
+  ])
+  */
 });
